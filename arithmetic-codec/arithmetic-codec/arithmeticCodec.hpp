@@ -14,6 +14,6 @@
 #define MAX_RANGE 512
 
 void arithmeticTest();
-
+void decimalToBinaryString(double fDecimal,  char* pString, const int32_t kLen);
 
 #endif /* arithmeticCodec_hpp */

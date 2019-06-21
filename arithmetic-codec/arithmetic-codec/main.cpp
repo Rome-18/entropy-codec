@@ -7,9 +7,11 @@
 //
 
 #include <iostream>
+#include "arithmeticCodec.hpp"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+  
+    arithmeticTest();
+    
     return 0;
 }
