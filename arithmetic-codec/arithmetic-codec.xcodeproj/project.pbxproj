@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A535F3722BC87E5002A21EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F3622BC87E5002A21EB /* main.cpp */; };
+		7A535F3F22BC8833002A21EB /* arithmeticCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		7A535F3322BC87E5002A21EB /* arithmetic-codec */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "arithmetic-codec"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A535F3622BC87E5002A21EB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = arithmeticCodec.cpp; sourceTree = "<group>"; };
+		7A535F3E22BC8833002A21EB /* arithmeticCodec.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = arithmeticCodec.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				7A535F3622BC87E5002A21EB /* main.cpp */,
+				7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */,
+				7A535F3E22BC8833002A21EB /* arithmeticCodec.hpp */,
 			);
 			path = "arithmetic-codec";
 			sourceTree = "<group>";
@@ -118,6 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A535F3F22BC8833002A21EB /* arithmeticCodec.cpp in Sources */,
 				7A535F3722BC87E5002A21EB /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
