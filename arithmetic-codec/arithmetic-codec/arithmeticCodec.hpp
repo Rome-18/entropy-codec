@@ -10,11 +10,7 @@
 #define arithmeticCodec_hpp
 
 #include <stdio.h>
-
-#define MAX_RANGE   510
-#define MAX_BS_LEN 100
-
-const double g_LpsMPS[2] = {0.4, 0.6};
+#include "Common.h"
 
 void arithmeticTest();
 void decimalToBinaryString(double fDecimal,  char* pString, const int32_t kLen);

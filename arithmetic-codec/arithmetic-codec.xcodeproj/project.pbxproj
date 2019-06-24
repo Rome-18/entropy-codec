@@ -31,6 +31,7 @@
 		7A535F3E22BC8833002A21EB /* arithmeticCodec.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = arithmeticCodec.hpp; sourceTree = "<group>"; };
 		7A535F4122BF6CD4002A21EB /* CabacEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CabacEngine.cpp; sourceTree = "<group>"; };
 		7A535F4222BF6CD4002A21EB /* CabacEngine.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CabacEngine.hpp; sourceTree = "<group>"; };
+		7A535F4422C083DA002A21EB /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +69,7 @@
 				7A535F3E22BC8833002A21EB /* arithmeticCodec.hpp */,
 				7A535F4122BF6CD4002A21EB /* CabacEngine.cpp */,
 				7A535F4222BF6CD4002A21EB /* CabacEngine.hpp */,
+				7A535F4422C083DA002A21EB /* Common.h */,
 			);
 			path = "arithmetic-codec";
 			sourceTree = "<group>";

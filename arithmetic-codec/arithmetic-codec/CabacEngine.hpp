@@ -10,6 +10,7 @@
 #define CabacEngine_hpp
 
 #include <stdio.h>
+#include "Common.h"
 
 class cCabacEngine {
     
@@ -26,7 +27,13 @@ public:
     void testWrite();
     void outputBinaryStatus();
     void outputCabacStatus();
-    void charToBinary(char* pSymbol);
+    void byteToBinary(u_int8_t uiSymbol);
+    void bsToBinary();
+    
+    void decimalToBinaryString(double fDecimal,  char* pString, const int32_t kLen);
+    void intToBinaryString(int32_t iSymbol, char* pString, const int32_t kLen);
+    void outputBinary(char* pString, const int32_t kLen, int32_t iPreFixIdx);
+    u_int32_t getShiftBits(int32_t iRange);
 
 private:
     u_int32_t m_iLow;
@@ -58,7 +65,7 @@ private:
     char* m_pBinaryHigh;
     char* m_pBinaryFLow;
     char* m_pBinaryFHigh;
-    char* m_pCharBinary;
+    char* m_pByteBinary;
 
 };
 
