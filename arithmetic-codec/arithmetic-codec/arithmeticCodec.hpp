@@ -11,9 +11,16 @@
 
 #include <stdio.h>
 
-#define MAX_RANGE 512
+#define MAX_RANGE   510
+#define MAX_BS_LEN 100
+
+const double g_LpsMPS[2] = {0.4, 0.6};
 
 void arithmeticTest();
 void decimalToBinaryString(double fDecimal,  char* pString, const int32_t kLen);
+void intToBinaryString(int32_t iSymbol, char* pString, const int32_t kLen);
+void outputBinary(char* pString, const int32_t kLen, int32_t iPreFixIdx);
+
+u_int32_t getShiftBits(int32_t iRange);
 
 #endif /* arithmeticCodec_hpp */

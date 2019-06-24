@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7A535F3722BC87E5002A21EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F3622BC87E5002A21EB /* main.cpp */; };
 		7A535F3F22BC8833002A21EB /* arithmeticCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */; };
+		7A535F4322BF6CD4002A21EB /* CabacEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F4122BF6CD4002A21EB /* CabacEngine.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		7A535F3622BC87E5002A21EB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = arithmeticCodec.cpp; sourceTree = "<group>"; };
 		7A535F3E22BC8833002A21EB /* arithmeticCodec.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = arithmeticCodec.hpp; sourceTree = "<group>"; };
+		7A535F4122BF6CD4002A21EB /* CabacEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CabacEngine.cpp; sourceTree = "<group>"; };
+		7A535F4222BF6CD4002A21EB /* CabacEngine.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CabacEngine.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,8 @@
 				7A535F3622BC87E5002A21EB /* main.cpp */,
 				7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */,
 				7A535F3E22BC8833002A21EB /* arithmeticCodec.hpp */,
+				7A535F4122BF6CD4002A21EB /* CabacEngine.cpp */,
+				7A535F4222BF6CD4002A21EB /* CabacEngine.hpp */,
 			);
 			path = "arithmetic-codec";
 			sourceTree = "<group>";
@@ -125,6 +130,7 @@
 			files = (
 				7A535F3F22BC8833002A21EB /* arithmeticCodec.cpp in Sources */,
 				7A535F3722BC87E5002A21EB /* main.cpp in Sources */,
+				7A535F4322BF6CD4002A21EB /* CabacEngine.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

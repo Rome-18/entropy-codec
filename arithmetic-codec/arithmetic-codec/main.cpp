@@ -8,10 +8,15 @@
 
 #include <iostream>
 #include "arithmeticCodec.hpp"
+#include "CabacEngine.hpp"
+
 
 int main(int argc, const char * argv[]) {
   
-    arithmeticTest();
+//    arithmeticTest();
+    
+    cCabacEngine sCabacTest;
+    sCabacTest.encodeBinsTest();
     
     return 0;
 }

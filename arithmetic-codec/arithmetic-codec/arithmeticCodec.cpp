@@ -9,8 +9,6 @@
 #include "arithmeticCodec.hpp"
 #include "math.h"
 
-const double g_LpsMPS[2] = {0.25, 0.75};
-
 u_int32_t getShiftBits(int32_t iRange)
 {
     if (iRange >= (MAX_RANGE >> 1)) {
@@ -26,18 +24,45 @@ void decimalToBinaryString(double fDecimal,  char* pString, const int32_t kLen)
     double fRemain = fDecimal;
     double fRefVal = 0;
 
-    pString[0] = '.';
-    for (int32_t i = 1; i < kLen; i++) {
+    for (int32_t i = 1; i <= kLen; i++) {
         fRefVal = pow(2, -i);
         iBin = fRemain >= fRefVal ? 1 : 0;
+        
         fRemain -= iBin * fRefVal;
         
-        pString[i] = iBin == 1 ? '1' : '0';
+        pString[i-1] = iBin == 1 ? '1' : '0';
     }
-    
-    pString[kLen - 1] = '\0';
 }
 
+void intToBinaryString(int32_t iSymbol, char* pString, const int32_t kLen) {
+    int32_t iBin = 0;
+    
+    for(int32_t i = 0; i < kLen; i++) {
+        iBin = (iSymbol << i) >> (kLen - 1) & 1;
+        pString[i] = iBin == 1 ? '1' : '0';
+    }
+}
+
+void outputBinary(char* pString, const int32_t kLen, int32_t iPreFixIdx)
+{
+    if (iPreFixIdx== 0) {
+        printf("            iL  =");
+    } else if (iPreFixIdx == 1) {
+        printf("            iH  =");
+    } else if (iPreFixIdx == 2) {
+        printf("            fL  =");
+    } else {
+        printf("            fH  =");
+    }
+
+    for(int32_t i = 0; i < kLen; i++) {
+        printf("%c", pString[i]);
+        if ((i+1) % 4 == 0) {
+            printf("-");
+        }
+    }
+    printf("\n");
+}
 
 void arithmeticTest()
 {
@@ -52,13 +77,16 @@ void arithmeticTest()
     double fLow = 0, fHigh = 0, fRange = 1.0;
 
     int32_t iLen = sizeof(int32_t) * 8;
-    char* p0 = new char(iLen);
-    char* p1 = new char(iLen);
+    char* p0 = new char(iLen + 1);
+    char* p1 = new char(iLen + 1);
+    char* p2 = new char(iLen + 1);
+    char* p3 = new char(iLen + 1);
+    
 
     iLPS = g_LpsMPS[0] * MAX_RANGE;
     iMPS = g_LpsMPS[1] * MAX_RANGE;
     iTestSymbol = 0xFFFFFFu;
-    for (int32_t i = 0; i < 24; i++) {
+    for (int32_t i = 0; i < 100; i++) {
         iBin = (iTestSymbol & (1 << i)) >> i;
         printf("i=%2d, bin=%d, int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%9.8f, %9.8f], [%9.8f, %9.8f], fR=%-9.8f,\n",
                i, iBin, iLow, iHigh, iLPS, iMPS, iRange,  fLow, fHigh,  fLPS, fMPS, fRange);
@@ -86,12 +114,16 @@ void arithmeticTest()
         printf("          ==>int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%9.8f, %9.8f], [%9.8f, %9.8f], fR=%-9.8f,\n",
                iLow, iHigh, iLPS, iMPS, iRange,  fLow, fHigh,  fLPS, fMPS, fRange);
         
-        decimalToBinaryString(fLow, p0, iLen);
-        decimalToBinaryString(fHigh, p1, iLen);
+        intToBinaryString(iLow, p0, iLen);
+        intToBinaryString(iHigh, p1, iLen);
+        decimalToBinaryString(fLow, p2, iLen);
+        decimalToBinaryString(fHigh, p3, iLen);
 
-        printf("            ****>L_H[0x%4X, 0x%4X], fL-H[%s, %s],  shiftbits=%d, totalbits=%2d, \n",
-               iLow, iHigh, p0, p1, iShiftBits, iTotalBits);
-        
+        outputBinary(p0, iLen, 0);
+        outputBinary(p1, iLen, 1);
+        outputBinary(p2, iLen, 2);
+        outputBinary(p3, iLen, 3);
+
         iLow <<= iShiftBits;
         iRange <<= iShiftBits;
         iHigh = iLow + iRange;
@@ -99,16 +131,25 @@ void arithmeticTest()
         iLPS = iRange * g_LpsMPS[0];
         iMPS = iRange - iLPS;
         
-        printf("          ==>int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%9.8f, %9.8f], [%9.8f, %9.8f], fR=%-9.8f,\n",
-               iLow, iHigh, iLPS, iMPS, iRange,  fLow, fHigh,  fLPS, fMPS, fRange);
+        printf("          ==>int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%9.8f, %9.8f], [%9.8f, %9.8f], fR=%-9.8f, shiftbits=%d, totalbits=%2d\n",
+               iLow, iHigh,
+               iLPS, iMPS, iRange,
+               fLow, fHigh,
+               fLPS, fMPS, fRange,
+               iShiftBits, iTotalBits);
         
-        printf("            ****>L-H[0x%4X, 0x%4X],  fL-H[%s, %s] \n", iLow, iHigh, p0, p1);
+        intToBinaryString(iLow, p0, iLen);
+        intToBinaryString(iHigh, p1, iLen);
+        outputBinary(p0, iLen, 0);
+        outputBinary(p1, iLen, 1);
 
         printf("\n");
     }
 
     delete p0;
     delete p1;
+    delete p2;
+    delete p3;
 
     printf("\n");
 }
