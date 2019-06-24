@@ -11,6 +11,7 @@
 		7A535F3F22BC8833002A21EB /* arithmeticCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */; };
 		7A535F4322BF6CD4002A21EB /* CabacEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F4122BF6CD4002A21EB /* CabacEngine.cpp */; };
 		7A535F4722C0C139002A21EB /* CabacEngine-x264.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F4522C0C139002A21EB /* CabacEngine-x264.cpp */; };
+		7A535F4A22C0D0CA002A21EB /* CabacEngineBasic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A535F4822C0D0C9002A21EB /* CabacEngineBasic.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,8 @@
 		7A535F4422C083DA002A21EB /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		7A535F4522C0C139002A21EB /* CabacEngine-x264.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "CabacEngine-x264.cpp"; sourceTree = "<group>"; };
 		7A535F4622C0C139002A21EB /* CabacEngine-x264.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "CabacEngine-x264.hpp"; sourceTree = "<group>"; };
+		7A535F4822C0D0C9002A21EB /* CabacEngineBasic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CabacEngineBasic.cpp; sourceTree = "<group>"; };
+		7A535F4922C0D0C9002A21EB /* CabacEngineBasic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CabacEngineBasic.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +71,8 @@
 			isa = PBXGroup;
 			children = (
 				7A535F3622BC87E5002A21EB /* main.cpp */,
+				7A535F4822C0D0C9002A21EB /* CabacEngineBasic.cpp */,
+				7A535F4922C0D0C9002A21EB /* CabacEngineBasic.hpp */,
 				7A535F3D22BC8833002A21EB /* arithmeticCodec.cpp */,
 				7A535F3E22BC8833002A21EB /* arithmeticCodec.hpp */,
 				7A535F4122BF6CD4002A21EB /* CabacEngine.cpp */,
@@ -135,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A535F4A22C0D0CA002A21EB /* CabacEngineBasic.cpp in Sources */,
 				7A535F3F22BC8833002A21EB /* arithmeticCodec.cpp in Sources */,
 				7A535F3722BC87E5002A21EB /* main.cpp in Sources */,
 				7A535F4722C0C139002A21EB /* CabacEngine-x264.cpp in Sources */,

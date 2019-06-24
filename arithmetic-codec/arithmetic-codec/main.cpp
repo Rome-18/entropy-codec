@@ -10,6 +10,7 @@
 #include "arithmeticCodec.hpp"
 #include "CabacEngine.hpp"
 #include "CabacEngine-x264.hpp"
+#include "CabacEngineBasic.hpp"
 
 
 int main(int argc, const char * argv[]) {
