@@ -6,16 +6,16 @@
 //  Copyright © 2019 edward.shi. All rights reserved.
 //
 
-#include "CabacEngine.hpp"
+#include "CabacEngine-x264.hpp"
 #include "math.h"
 #include "memory.h"
 
-cCabacEngine::cCabacEngine()
+cCabacEngine_X264::cCabacEngine_X264()
 {
     resetEngine();
 }
 
-cCabacEngine::~cCabacEngine()
+cCabacEngine_X264::~cCabacEngine_X264()
 {
     delete m_bsAll;
     delete m_pByteLead;
@@ -26,13 +26,13 @@ cCabacEngine::~cCabacEngine()
     delete m_pByteBinary;
 }
 
-void cCabacEngine::resetEngine()
+void cCabacEngine_X264::resetEngine()
 {
     m_iLow = 0;
-    m_iHigh = MAX_RANGE;
-    m_iLPS = g_LpsMPS[0] * MAX_RANGE;
-    m_iMPS = g_LpsMPS[1] * MAX_RANGE;
-    m_iRange = MAX_RANGE;
+    m_iHigh = 0x01FE;
+    m_iLPS = g_LpsMPS[0] * 0x01FE;
+    m_iMPS = g_LpsMPS[1] * 0x01FE;
+    m_iRange = 0x01FE;
     
     m_fLow = 0;
     m_fHigh = 1.0;
@@ -45,12 +45,13 @@ void cCabacEngine::resetEngine()
     m_iShiftBits = 0;
     m_iTotalShiftBits = 0;
     m_iLeftBits = 23;
+    m_iQueueBits = -9;
     
     m_iMaxBsLen = MAX_BS_LEN;
     m_iBsIdx = 0;
     m_bsAll = new u_int8_t(m_iMaxBsLen);
     m_bs = m_bsAll + 1;
-    
+
     m_iBinaryLenI = sizeof(u_int32_t) * 8;
     m_iBinaryLenD = sizeof(double) * 8;
 
@@ -72,7 +73,7 @@ void cCabacEngine::resetEngine()
 
 }
 
-void cCabacEngine::outputBinaryStatus()
+void cCabacEngine_X264::outputBinaryStatus()
 {
     intToBinaryString(m_iLow, m_pBinaryLow, m_iBinaryLenI);
     intToBinaryString(m_iHigh, m_pBinaryHigh, m_iBinaryLenI);
@@ -85,14 +86,14 @@ void cCabacEngine::outputBinaryStatus()
     outputBinary(m_pBinaryFHigh, m_iBinaryLenD, 3);
 }
 
-void cCabacEngine::outputCabacStatus()
+void cCabacEngine_X264::outputCabacStatus()
 {
-    printf("          ==>int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%-9.8f, %-9.8f], [%-9.8f, %-9.8f], fR=%-9.8f, encBin=%3d, shft=%d, totalShft=%2d, leftbits=%2d, BsIdx=%2d, NumBy=%d\n",
-           m_iLow, m_iHigh, m_iLPS, m_iMPS, m_iRange,  m_fLow, m_fHigh,  m_fLPS, m_fMPS, m_fRange, m_iEncodeBins, m_iShiftBits, m_iTotalShiftBits, m_iLeftBits, m_iBsIdx,m_iNumBytes);
+    printf("        ==>int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%-9.8f, %-9.8f], [%-9.8f, %-9.8f], fR=%-9.8f, encBin=%3d, shft=%d, totalShft=%2d, leftbits=%2d, BsIdx=%2d, NumBy=%d, QueBit = %d\n",
+           m_iLow, m_iHigh, m_iLPS, m_iMPS, m_iRange,  m_fLow, m_fHigh,  m_fLPS, m_fMPS, m_fRange, m_iEncodeBins, m_iShiftBits, m_iTotalShiftBits, m_iLeftBits, m_iBsIdx,m_iNumBytes, m_iQueueBits);
     
 }
 
-void cCabacEngine::encodeBinsTest()
+void cCabacEngine_X264::encodeBinsTest()
 {
     u_int8_t iBin = 0;
 
@@ -108,7 +109,7 @@ void cCabacEngine::encodeBinsTest()
     }
 }
 
-void cCabacEngine::encodeBin(u_int8_t iBin)
+void cCabacEngine_X264::encodeBin(u_int8_t iBin)
 {
     outputCabacStatus();
 
@@ -140,12 +141,12 @@ void cCabacEngine::encodeBin(u_int8_t iBin)
     outputBinaryStatus();
 }
 
-void cCabacEngine::decodeBins(char* pBin, const u_int32_t kLen)
+void cCabacEngine_X264::decodeBins(char* pBin, const u_int32_t kLen)
 {
     //to do
 }
 
-void cCabacEngine::renormal()
+void cCabacEngine_X264::renormal()
 {
     m_iShiftBits = getShiftBits(m_iRange);
     m_iLow <<= m_iShiftBits;
@@ -157,58 +158,61 @@ void cCabacEngine::renormal()
 
     m_iTotalShiftBits += m_iShiftBits;
     m_iLeftBits -= m_iShiftBits;
+    
+    m_iQueueBits += m_iShiftBits;
 }
 
-void cCabacEngine::testWrite()
+void cCabacEngine_X264::testWrite()
 {
-    if (m_iLeftBits < 12) {
-        //LeadByte is the top 8 bits
-        u_int32_t uiLeadByte = m_iLow >> (24 - m_iLeftBits);
-        m_iLeftBits += 8;
-        
-        printf("   ----testWrite(), uiLeadByte=%d \n", uiLeadByte);
-        intToBinaryString(uiLeadByte, m_pByteLead, m_iBinaryLenI);
+    if(m_iQueueBits >= 0 )
+    {
+        int out = m_iLow >> (m_iQueueBits + 10);
+
+        printf("   ----testWrite(), uiLeadByte=%d \n", out);
+        intToBinaryString(out, m_pByteLead, m_iBinaryLenI);
         outputBinary(m_pByteLead, m_iBinaryLenI, 4);
 
         intToBinaryString(m_iLow, m_pBinaryLow, m_iBinaryLenI);
         outputBinary(m_pBinaryLow, m_iBinaryLenI, 0);
-        
-
-        m_iLow     &= 0xFFFFFFFFu >> m_iLeftBits;
-        m_iHigh = m_iLow + m_iRange;
     
+        m_iLow  &= (0x400<< m_iQueueBits) -1;
+        m_iHigh = m_iLow + m_iRange;
+        m_iQueueBits -= 8;
+        m_iLeftBits += 8;
+
         intToBinaryString(m_iLow, m_pBinaryLow, m_iBinaryLenI);
         outputBinary(m_pBinaryLow, m_iBinaryLenI, 0);
-        
-        //whole byte is Outstanding bits
-        if (uiLeadByte == 0xff) {
-            ++m_iNumBytes;
-        } else {
-            //output the previous byte, delay output for carry the outstanding bits
-            u_int32_t uiCarry = uiLeadByte >> 8;
-            int32_t iIdx = m_iBsIdx;
-        
-            m_bs[iIdx - 1] += uiCarry;
-            
-            printf("  -----uiCarry=%d \n", uiCarry);
-            
-            //more than one bytes are outstanding bits
-            u_int8_t uiByte = ( 0xff + uiCarry ) & 0xff;
-            printf("uiByte=%d,\n", uiByte);
     
-            while (m_iNumBytes > 0) {
-                m_bs[m_iBsIdx] = uiByte;
+        if( (out & 0xff) == 0xff )
+            m_iNumBytes++;
+        else
+        {
+            int carry = out >> 8;
+            int32_t iIdx = m_iBsIdx;
+            // this can't modify before the beginning of the stream because
+            // that would correspond to a probability > 1.
+            // it will write before the beginning of the stream, which is ok
+            // because a slice header always comes before cabac data.
+            // this can't carry beyond the one byte, because any 0xff bytes
+            // are in bytes_outstanding and thus not written yet.
+            m_bs[iIdx -1] += carry;
+            
+            printf("    carry=%d, carry - 1 = %d \n", carry, carry-1);
+    
+            while( m_iNumBytes > 0 )
+            {
+                m_bs[m_iBsIdx] = carry-1;
                 m_iBsIdx++;
                 --m_iNumBytes;
             }
-            
-            m_bs[m_iBsIdx] = uiLeadByte;
+           
+            m_bs[m_iBsIdx] = out;
             m_iBsIdx++;
         }
     }
 }
 
-void cCabacEngine::byteToBinary(u_int8_t uiSymbol, const int32_t kByteIdx)
+void cCabacEngine_X264::byteToBinary(u_int8_t uiSymbol, const int32_t kByteIdx)
 {
     int32_t iBin = 0;
     int32_t iOffset = kByteIdx * sizeof(u_int8_t) * 8;
@@ -225,7 +229,7 @@ void cCabacEngine::byteToBinary(u_int8_t uiSymbol, const int32_t kByteIdx)
 //    printf("\n");
 }
 
-void cCabacEngine::bsToBinary()
+void cCabacEngine_X264::bsToBinary()
 {
     printf("\n     bs binary, m_iBsIdx=%2d, bins=", m_iBsIdx);
 
@@ -243,7 +247,7 @@ void cCabacEngine::bsToBinary()
     printf("\n");
 }
 
-u_int32_t cCabacEngine::getShiftBits(int32_t iRange)
+u_int32_t cCabacEngine_X264::getShiftBits(int32_t iRange)
 {
     if (iRange >= (MAX_RANGE >> 1)) {
         return 0;
@@ -252,7 +256,7 @@ u_int32_t cCabacEngine::getShiftBits(int32_t iRange)
     return  (log(MAX_RANGE / iRange) / log(2));
 }
 
-void cCabacEngine::decimalToBinaryString(double fDecimal,  char* pString, const int32_t kLen)
+void cCabacEngine_X264::decimalToBinaryString(double fDecimal,  char* pString, const int32_t kLen)
 {
     u_int8_t iBin = 0;
     double fRemain = fDecimal;
@@ -268,7 +272,7 @@ void cCabacEngine::decimalToBinaryString(double fDecimal,  char* pString, const 
     }
 }
 
-void cCabacEngine::intToBinaryString(int32_t iSymbol, char* pString, const int32_t kLen) {
+void cCabacEngine_X264::intToBinaryString(int32_t iSymbol, char* pString, const int32_t kLen) {
     int32_t iBin = 0;
     
     for(int32_t i = 0; i < kLen; i++) {
@@ -277,7 +281,7 @@ void cCabacEngine::intToBinaryString(int32_t iSymbol, char* pString, const int32
     }
 }
 
-void cCabacEngine::outputBinary(char* pString, const int32_t kLen, int32_t iPreFixIdx)
+void cCabacEngine_X264::outputBinary(char* pString, const int32_t kLen, int32_t iPreFixIdx)
 {
     if (iPreFixIdx== 0) {
         printf("            iL  =");

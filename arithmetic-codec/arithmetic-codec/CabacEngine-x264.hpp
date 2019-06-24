@@ -6,17 +6,17 @@
 //  Copyright © 2019 edward.shi. All rights reserved.
 //
 
-#ifndef CabacEngine_hpp
-#define CabacEngine_hpp
+#ifndef CabacEngine_X264_hpp
+#define CabacEngine_X264_hpp
 
 #include <stdio.h>
 #include "Common.h"
 
-class cCabacEngine {
+class cCabacEngine_X264 {
     
 public:
-    cCabacEngine();
-    ~cCabacEngine();
+    cCabacEngine_X264();
+    ~cCabacEngine_X264();
     
     void resetEngine();
     
@@ -53,6 +53,7 @@ private:
     u_int32_t m_iTotalShiftBits;
     u_int32_t m_iLeftBits;
     u_int32_t m_iNumBytes; //outstanding byte
+    int32_t  m_iQueueBits;
 
     u_int32_t m_iMaxBsLen;
     u_int32_t m_iBsIdx;
