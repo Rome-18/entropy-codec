@@ -8,14 +8,15 @@
          <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
+            condition = "m_iTotalShiftBits &gt;= 4"
             continueAfterRunningActions = "No"
-            filePath = "arithmetic-codec/arithmetic-codec/CabacEngine.cpp"
-            timestampString = "583061795.5407"
+            filePath = "arithmetic-codec/arithmetic-codec/CabacEngineBasic.cpp"
+            timestampString = "583075233.023376"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
-            landmarkName = "cCabacEngine::testWrite()"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
+            landmarkName = "cCabacEngine_Basic::testWrite()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +26,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "arithmetic-codec/arithmetic-codec/CabacEngine.cpp"
-            timestampString = "583061795.54098"
+            filePath = "arithmetic-codec/arithmetic-codec/CabacEngineBasic.cpp"
+            timestampString = "583075233.023946"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "185"
-            endingLineNumber = "185"
-            landmarkName = "cCabacEngine::testWrite()"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
+            landmarkName = "cCabacEngine_Basic::testWrite()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,45 +42,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "arithmetic-codec/arithmetic-codec/CabacEngine.cpp"
-            timestampString = "583061795.541037"
+            filePath = "arithmetic-codec/arithmetic-codec/CabacEngineBasic.cpp"
+            timestampString = "583075233.024191"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "197"
-            endingLineNumber = "197"
-            landmarkName = "cCabacEngine::testWrite()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "arithmetic-codec/arithmetic-codec/CabacEngine-x264.cpp"
-            timestampString = "583061795.541088"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
-            landmarkName = "cCabacEngine_X264::testWrite()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "arithmetic-codec/arithmetic-codec/CabacEngine-x264.cpp"
-            timestampString = "583061795.54127"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "206"
-            endingLineNumber = "206"
-            landmarkName = "cCabacEngine_X264::testWrite()"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
+            landmarkName = "cCabacEngine_Basic::testWrite()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

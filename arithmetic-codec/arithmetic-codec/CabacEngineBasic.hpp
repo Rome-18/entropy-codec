@@ -52,8 +52,6 @@ private:
     u_int32_t m_iShiftBits;
     u_int32_t m_iTotalShiftBits;
     u_int32_t m_iLeftBits;
-    u_int32_t m_iNumBytes; //outstanding byte
-    int32_t  m_iQueueBits;
 
     u_int32_t m_iMaxBsLen;
     u_int32_t m_iBsIdx;

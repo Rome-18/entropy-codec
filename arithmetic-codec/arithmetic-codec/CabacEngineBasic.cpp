@@ -40,13 +40,11 @@ void cCabacEngine_Basic::resetEngine()
     m_fMPS = g_LpsMPS[1];
     m_fRange = 1.0;
     
-    m_iNumBytes = 0;
     m_iEncodeBins = 0;
     m_iShiftBits = 0;
     m_iTotalShiftBits = 0;
     m_iLeftBits = 23;
-    m_iQueueBits = -9;
-    
+
     m_iMaxBsLen = MAX_BS_LEN;
     m_iBsIdx = 0;
     m_bsAll = new u_int8_t(m_iMaxBsLen);
@@ -88,8 +86,8 @@ void cCabacEngine_Basic::outputBinaryStatus()
 
 void cCabacEngine_Basic::outputCabacStatus()
 {
-    printf("        ==>int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%-9.8f, %-9.8f], [%-9.8f, %-9.8f], fR=%-9.8f, encBin=%3d, shft=%d, totalShft=%2d, leftbits=%2d, BsIdx=%2d, NumBy=%d, QueBit = %d\n",
-           m_iLow, m_iHigh, m_iLPS, m_iMPS, m_iRange,  m_fLow, m_fHigh,  m_fLPS, m_fMPS, m_fRange, m_iEncodeBins, m_iShiftBits, m_iTotalShiftBits, m_iLeftBits, m_iBsIdx,m_iNumBytes, m_iQueueBits);
+    printf("        ==>int::[%4d, %4d], [%4d, %4d], iR=%4d ---- double::[%-9.8f, %-9.8f], [%-9.8f, %-9.8f], fR=%-9.8f, encBin=%3d, shft=%d, totalShft=%2d, leftbits=%2d, BsIdx=%2d\n",
+           m_iLow, m_iHigh, m_iLPS, m_iMPS, m_iRange,  m_fLow, m_fHigh,  m_fLPS, m_fMPS, m_fRange, m_iEncodeBins, m_iShiftBits, m_iTotalShiftBits, m_iLeftBits, m_iBsIdx);
     
 }
 
@@ -98,6 +96,7 @@ void cCabacEngine_Basic::encodeBinsTest()
     u_int8_t iBin = 0;
 
     for (int32_t i = 0; i < 400; i++) {
+        m_iShiftBits = 0;
         iBin = (i % 20 == 19) ? 0 : 1;  //(iTestSymbol & (1 << i)) >> i;
         encodeBin(iBin);
         
@@ -158,57 +157,66 @@ void cCabacEngine_Basic::renormal()
 
     m_iTotalShiftBits += m_iShiftBits;
     m_iLeftBits -= m_iShiftBits;
-    
-    m_iQueueBits += m_iShiftBits;
 }
 
 void cCabacEngine_Basic::testWrite()
 {
-    if(m_iQueueBits >= 0 )
+    if(m_iShiftBits > 0 )
     {
-        int out = m_iLow >> (m_iQueueBits + 10);
-
-        printf("   ----testWrite(), uiLeadByte=%d \n", out);
-        intToBinaryString(out, m_pByteLead, m_iBinaryLenI);
+        u_int32_t iShiftBin = (m_iLow << m_iLeftBits) >> (32 - m_iShiftBits);
+        
+        printf("   ----testWrite(), uiLeadByte=%d \n", iShiftBin);
+        intToBinaryString(iShiftBin, m_pByteLead, m_iBinaryLenI);
         outputBinary(m_pByteLead, m_iBinaryLenI, 4);
-
+        
         intToBinaryString(m_iLow, m_pBinaryLow, m_iBinaryLenI);
         outputBinary(m_pBinaryLow, m_iBinaryLenI, 0);
-    
-        m_iLow  &= (0x400<< m_iQueueBits) -1;
+        
+        m_iLeftBits += m_iShiftBits;
+        m_iLow &= 0xFFFFFFFFu >> m_iLeftBits;
         m_iHigh = m_iLow + m_iRange;
-        m_iQueueBits -= 8;
-        m_iLeftBits += 8;
-
+       
         intToBinaryString(m_iLow, m_pBinaryLow, m_iBinaryLenI);
         outputBinary(m_pBinaryLow, m_iBinaryLenI, 0);
-    
-        if( (out & 0xff) == 0xff )
-            m_iNumBytes++;
-        else
-        {
-            int carry = out >> 8;
-            int32_t iIdx = m_iBsIdx;
-            // this can't modify before the beginning of the stream because
-            // that would correspond to a probability > 1.
-            // it will write before the beginning of the stream, which is ok
-            // because a slice header always comes before cabac data.
-            // this can't carry beyond the one byte, because any 0xff bytes
-            // are in bytes_outstanding and thus not written yet.
-            m_bs[iIdx -1] += carry;
+
+        intToBinaryString(m_iHigh, m_pBinaryHigh, m_iBinaryLenI);
+        outputBinary(m_pBinaryHigh, m_iBinaryLenI, 1);
+        
+        m_iBsIdx = m_iTotalShiftBits >> 3;
+
+        if (m_iBsIdx > 0) {
+            u_int8_t iCarryNum = 8 - (m_iTotalShiftBits - m_iShiftBits) & 0x7;
+            u_int8_t iCurBinNum = m_iShiftBits - iCarryNum;
+            u_int8_t iCurOffset = (m_iTotalShiftBits - iCurBinNum) & 0x7;
+            u_int8_t iCurVal = iShiftBin << (8 - iCurBinNum - iCurOffset);
             
-            printf("    carry=%d, carry - 1 = %d \n", carry, carry-1);
-    
-            while( m_iNumBytes > 0 )
-            {
-                m_bs[m_iBsIdx] = carry-1;
-                m_iBsIdx++;
-                --m_iNumBytes;
-            }
+            printf(" ==>    TotalShftBit=%3d, BsIdx=%2d, iCarryNum=%d, iCurOffset=%2d, iCurBinNum=%d, ",
+                   m_iTotalShiftBits, m_iBsIdx, iCarryNum,iCurOffset, iCurBinNum);
+            u_int8_t iCarryVal = iShiftBin >> (m_iShiftBits - iCarryNum);
+            m_bs[m_iBsIdx - 1] += iCarryVal;
+            printf("iCarryVal=%d ", iCarryVal);
+            printf("curVal=%3d, ", m_bs[m_iBsIdx]);
+            m_bs[m_iBsIdx] += iCurVal ;
+            
+            printf("==>newVal=%3d, curVal=%3d, \n", iCurVal,  m_bs[m_iBsIdx]);
+        } else {
+            u_int8_t iCurBinNum = m_iShiftBits;
+            u_int8_t iCurOffset = (m_iTotalShiftBits - iCurBinNum) & 0x7;
+            u_int8_t iCurVal = iShiftBin << (8 - iCurBinNum - iCurOffset);
+            
+            printf(" ==>    TotalShftBit=%3d, BsIdx=%2d, iCarryNum=%d, iCurOffset=%2d, iCurBinNum=%d, ",
+                   m_iTotalShiftBits, m_iBsIdx, 0,iCurOffset, iCurBinNum);
            
-            m_bs[m_iBsIdx] = out;
-            m_iBsIdx++;
+            printf("curVal=%3d, ", m_bs[m_iBsIdx]);
+            m_bs[m_iBsIdx] += iCurVal ;
+
+            printf("==>newVal=%3d, curVal=%3d, \n", iCurVal,  m_bs[m_iBsIdx]);
         }
+        
+        intToBinaryString(m_bs[m_iBsIdx], m_pByteBinary, m_iBinaryLenI);
+        outputBinary(m_pByteBinary, m_iBinaryLenI, 4);
+        
+        printf("\n");
     }
 }
 
