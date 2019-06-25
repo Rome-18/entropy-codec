@@ -55,6 +55,7 @@ private:
     u_int32_t m_iTotalShiftBits;
     u_int32_t m_iLeftBits;
     u_int32_t m_iOBits;
+    u_int32_t m_iOBNum;
 
     u_int32_t m_iMaxBsLen;
     u_int32_t m_iBsIdx;
@@ -70,6 +71,7 @@ private:
     char* m_pBinaryFLow;
     char* m_pBinaryFHigh;
     char* m_pByteBinary;
+    u_int32_t* m_pOBIdx;
 
 };
 

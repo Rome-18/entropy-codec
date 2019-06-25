@@ -40,6 +40,7 @@ void cCabacEngine_Basic::resetEngine()
     m_fMPS = g_LpsMPS[1];
     m_fRange = 1.0;
 
+    m_iOBNum = 0;
     m_iOBits = 0;
     m_iEncodeBins = 0;
     m_iShiftBits = 0;
@@ -60,7 +61,6 @@ void cCabacEngine_Basic::resetEngine()
     m_pBinaryFLow = new char(m_iBinaryLenD);
     m_pBinaryFHigh = new char(m_iBinaryLenD);
     m_pByteBinary = new char(sizeof(u_int8_t) * 8 * m_iMaxBsLen);
-
     
     memset(m_bs, 0, m_iMaxBsLen);
     memset(m_pByteLead, 0, m_iBinaryLenI);
@@ -69,7 +69,9 @@ void cCabacEngine_Basic::resetEngine()
     memset(m_pBinaryFLow, 0, m_iBinaryLenD);
     memset(m_pBinaryFHigh, 0, m_iBinaryLenD);
     memset(m_pByteBinary, 0, sizeof(u_int8_t));
-
+    
+    m_pOBIdx = new u_int32_t(sizeof(u_int32_t) * m_iMaxBsLen);
+    memset(m_pOBIdx, 0, sizeof(sizeof(u_int32_t) * m_iMaxBsLen));
 }
 
 void cCabacEngine_Basic::outputBinaryStatus()
@@ -107,6 +109,19 @@ void cCabacEngine_Basic::encodeBinsTest()
         
         printf("\n");
     }
+    
+    printf(" outstanding bits index: \n");
+
+    int32_t iNum = 0;
+    for (int32_t i = 0; i < 400; i++) {
+        if (m_pOBIdx[i] == 1) {
+            printf("%d-", i);
+            
+            iNum++;
+        }
+    }
+    
+    printf("\n total OB=%3d, m_iOBNum=%d \n", iNum, m_iOBNum);
 }
 
 void cCabacEngine_Basic::encodeBin(u_int8_t iBin)
@@ -188,9 +203,14 @@ void cCabacEngine_Basic::testWrite()
     intToBinaryString(m_iLow, m_pBinaryLow, m_iBinaryLenI);
     intToBinaryString(m_iHigh, m_pBinaryHigh, m_iBinaryLenI);
     outputBinary(m_pBinaryLow, m_iBinaryLenI, 0);
-    outputBinary(m_pBinaryHigh, m_iBinaryLenI, 0);
+    outputBinary(m_pBinaryHigh, m_iBinaryLenI, 1);
 
     if (iShiftbits == 0) {
+        
+        if(m_iShiftBits == 1) {
+            m_pOBIdx[m_iEncodeBins] = 1;
+            m_iOBNum++;
+        }
         return;
     }
     
@@ -207,7 +227,7 @@ void cCabacEngine_Basic::testWrite()
     intToBinaryString(m_iLow, m_pBinaryLow, m_iBinaryLenI);
     intToBinaryString(m_iHigh, m_pBinaryHigh, m_iBinaryLenI);
     outputBinary(m_pBinaryLow, m_iBinaryLenI, 0);
-    outputBinary(m_pBinaryHigh, m_iBinaryLenI, 0);
+    outputBinary(m_pBinaryHigh, m_iBinaryLenI, 1);
 }
 
 void cCabacEngine_Basic::putBits(const u_int32_t kSymbol, const u_int32_t kLen)
