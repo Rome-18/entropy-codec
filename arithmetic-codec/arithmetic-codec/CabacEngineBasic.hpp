@@ -34,6 +34,8 @@ public:
     void intToBinaryString(int32_t iSymbol, char* pString, const int32_t kLen);
     void outputBinary(char* pString, const int32_t kLen, int32_t iPreFixIdx);
     u_int32_t getShiftBits(int32_t iRange);
+    u_int32_t getActualShiftBits();
+    void putBits(const u_int32_t kSymbol, const u_int32_t kLen);
 
 private:
     u_int32_t m_iLow;
@@ -52,6 +54,7 @@ private:
     u_int32_t m_iShiftBits;
     u_int32_t m_iTotalShiftBits;
     u_int32_t m_iLeftBits;
+    u_int32_t m_iOBits;
 
     u_int32_t m_iMaxBsLen;
     u_int32_t m_iBsIdx;
